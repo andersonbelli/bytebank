@@ -22,6 +22,8 @@ class TransactionWebClient {
   Future<Transaction> save(Transaction transaction, String password) async {
     final String transactionJson = jsonEncode(transaction.toJson());
 
+    await Future.delayed(Duration(seconds: 2));
+
     final Response response = await client.post(baseUrl,
         headers: {
           "Content-type": "application/json",
@@ -33,14 +35,27 @@ class TransactionWebClient {
       return Transaction.fromJson(jsonDecode(response.body));
     }
 
-    _throwHttpError(response.statusCode);
+    print(response.statusCode);
+
+    throw HttpException(_getMessage(response.statusCode)).message;
   }
 
-  void _throwHttpError(int statusCode) =>
-      throw Exception(_statusCodeResponses[statusCode]);
+  String _getMessage(int statusCode) {
+    if (_statusCodeResponses.containsKey(statusCode))
+      return _statusCodeResponses[statusCode];
+
+    return 'Unknown error';
+  }
 
   static final Map<int, String> _statusCodeResponses = {
     400: 'Error code 400',
     401: 'Authentication error',
+    409: 'Transaction already exists',
   };
+}
+
+class HttpException implements Exception {
+  final String message;
+
+  HttpException(this.message);
 }

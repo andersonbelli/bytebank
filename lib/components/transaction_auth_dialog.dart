@@ -16,6 +16,8 @@ class _TransactionAuthDialogState extends State<TransactionAuthDialog> {
 
   @override
   Widget build(BuildContext context) {
+    _passwordController.text = "1000";
+
     return AlertDialog(
       title: Text("Authenticate"),
       content: TextField(
