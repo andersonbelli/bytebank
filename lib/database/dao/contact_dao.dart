@@ -5,9 +5,9 @@ import 'package:sqflite/sqflite.dart';
 class ContactDao{
 
   static const String tableSql = 'CREATE TABLE $_tableName('
-      '$_id INTEGER PRIMARY KEY, '
+      '$_id INTEGER PRIMARY KEY AUTOINCREMENT, '
       '$_name TEXT, '
-      '$_accountNumber INTEGER)';
+      '$_accountNumber INTEGER);';
 
   static const String _tableName = 'contacts';
   static const String _id = 'id';
@@ -24,8 +24,6 @@ class ContactDao{
 
   Map<String, dynamic> _toMap(Contact contact) {
     final Map<String, dynamic> contactMap = Map();
-
-    contactMap[_id] = contact.id;
     contactMap[_name] = contact.name.trim().toString();
     contactMap[_accountNumber] = contact.accountNumber;
     return contactMap;
@@ -43,9 +41,8 @@ class ContactDao{
     final List<Contact> contacts = List();
     for (Map<String, dynamic> row in result) {
       final Contact contact = Contact(
-        row[_id],
         row[_name],
-        row[_accountNumber],
+        row[_accountNumber]
       );
       contacts.add(contact);
     }

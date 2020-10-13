@@ -29,13 +29,13 @@ class _TransactionAuthDialogState extends State<TransactionAuthDialog> {
       ),
       actions: [
         FlatButton(
+            onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+        FlatButton(
             onPressed: () {
               widget.onConfirm(_passwordController.text);
               Navigator.pop(context);
             },
-            child: Text("Cancel")),
-        FlatButton(
-            onPressed: () => Navigator.pop(context), child: Text("Transfer")),
+            child: Text("Confirm")),
       ],
     );
   }
