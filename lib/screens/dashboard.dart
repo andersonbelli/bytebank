@@ -13,8 +13,9 @@ class Dashboard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-                'https://cdn.pixabay.com/photo/2019/10/15/06/03/pinwheel-4550711_960_720.jpg'),
+            Image.asset("lib/assets/pinwheel.jpg"),
+            // Image.network(
+            //     'https://cdn.pixabay.com/photo/2019/10/15/06/03/pinwheel-4550711_960_720.jpg'),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Material(
@@ -24,14 +25,14 @@ class Dashboard extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      _FeatureItem(
+                      FeatureItem(
                           name: "Transfer",
                           icon: Icons.monetization_on,
                           onClick: () => Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ContactsList()))),
-                      _FeatureItem(
+                      FeatureItem(
                           name: "Transaction feed",
                           icon: Icons.insert_drive_file,
                           onClick: () => Navigator.push(
@@ -50,12 +51,12 @@ class Dashboard extends StatelessWidget {
   }
 }
 
-class _FeatureItem extends StatelessWidget {
+class FeatureItem extends StatelessWidget {
   final String name;
   final IconData icon;
   final Function onClick;
 
-  _FeatureItem({this.name, this.icon, @required this.onClick});
+  FeatureItem({this.name, this.icon, @required this.onClick});
 
   @override
   Widget build(BuildContext context) {
