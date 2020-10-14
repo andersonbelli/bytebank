@@ -1,42 +1,38 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'matchers.dart';
+import 'mocks.dart';
 
 void main() {
-  testWidgets('Should display the main image when Dashboard is opended',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Dashboard()));
-    final mainImage = find.byType(Image);
-    expect(mainImage, findsOneWidget);
-  });
-  testWidgets(
-      'Should display the transfer feature when the dashboard is opened',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: Dashboard()));
+  final mockContactDao = MockContactDao();
 
-    final transferFeatureItem = find.byWidgetPredicate((widget) {
-      return featureItemMatcher(widget, "Transfer", Icons.monetization_on);
+  group('When Dashboard is opened', () {
+    testWidgets('Should display the main image', (WidgetTester tester) async {
+      await tester
+          .pumpWidget(MaterialApp(home: Dashboard(contactDao: mockContactDao)));
+      final mainImage = find.byType(Image);
+      expect(mainImage, findsOneWidget);
     });
-    expect(transferFeatureItem, findsOneWidget);
-  });
-  testWidgets(
-      'Should display the transaction feed feature when the dashboard is opened',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: Dashboard()));
+    testWidgets('Should display the transfer feature', (tester) async {
+      await tester
+          .pumpWidget(MaterialApp(home: Dashboard(contactDao: mockContactDao)));
 
-    final transferFeatureItem = find.byWidgetPredicate((widget) {
-      return featureItemMatcher(
-          widget, 'Transaction feed', Icons.insert_drive_file);
+      final transferFeatureItem = find.byWidgetPredicate((widget) {
+        return featureItemMatcher(widget, "Transfer", Icons.monetization_on);
+      });
+      expect(transferFeatureItem, findsOneWidget);
     });
-    expect(transferFeatureItem, findsOneWidget);
+    testWidgets('Should display the transaction feed feature', (tester) async {
+      await tester
+          .pumpWidget(MaterialApp(home: Dashboard(contactDao: mockContactDao)));
+
+      final transferFeatureItem = find.byWidgetPredicate((widget) {
+        return featureItemMatcher(
+            widget, 'Transaction feed', Icons.insert_drive_file);
+      });
+      expect(transferFeatureItem, findsOneWidget);
+    });
   });
-}
-
-bool featureItemMatcher(Widget widget, String name, IconData icon) {
-  if (widget is FeatureItem) {
-    return widget.name == name && widget.icon == icon;
-  }
-
-  return false;
 }
