@@ -6,6 +6,7 @@ import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclient_transaction.dart';
 import 'package:bytebank/models/Contacts.dart';
 import 'package:bytebank/models/transaction.dart';
+import 'package:bytebank/widgets/app_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,17 +20,13 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final TransactionWebClient _webClient = TransactionWebClient();
-
   final TextEditingController _valueController = TextEditingController();
-
   final String transactionId = Uuid().v4();
-
   bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
-    print("Transaction form id $transactionId");
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('New transaction'),
@@ -89,7 +86,8 @@ class _TransactionFormState extends State<TransactionForm> {
                                 _sending = true;
                               });
 
-                              _send(transactionCreated, password, context);
+                              _send(dependencies.transactionWebClient,
+                                  transactionCreated, password, context);
                             });
                           });
                     },
@@ -104,22 +102,21 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _send(
+    webClient,
     Transaction transactionCreated,
     String password,
     BuildContext context,
   ) async {
-    Future.delayed(Duration(seconds: 1));
-
     final Transaction transaction =
-        await _webClient.save(transactionCreated, password).catchError((e) {
-      _showSuccessMethod(
+        await webClient.save(transactionCreated, password).catchError((e) {
+      _showFailure(
         context,
         message: "Timeout submitting transaction, try again",
       );
     }, test: (e) => e is TimeoutException).catchError((e) {
-      _showSuccessMethod(context, message: "Http Error: ${e.toString()}");
+      _showFailure(context, message: "Http Error: ${e.toString()}");
     }, test: (e) => e is HttpException).catchError((e) {
-      _showSuccessMethod(context, message: "Error: ${e.toString()}");
+      _showFailure(context, message: "Error: ${e.toString()}");
     }).whenComplete(
       () => setState(() {
         _sending = false;
@@ -127,16 +124,16 @@ class _TransactionFormState extends State<TransactionForm> {
     );
 
     if (transaction != null) {
-      showDialog(
+      Navigator.pop(context);
+      return showDialog(
           context: context,
           builder: (contextDialog) {
             return SuccessDialog("successful transaction!");
           });
-      Navigator.pop(context);
     }
   }
 
-  Future _showSuccessMethod(BuildContext context,
+  Future _showFailure(BuildContext context,
       {String message = "Unknown error"}) {
     return showDialog(
         context: context,

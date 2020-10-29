@@ -4,10 +4,6 @@ import 'package:bytebank/screens/transaction_list.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {
-  final ContactDao contactDao;
-
-  Dashboard({@required this.contactDao});
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -39,8 +35,7 @@ class Dashboard extends StatelessWidget {
                               onClick: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ContactsList(
-                                          contactDao: contactDao)))),
+                                      builder: (context) => ContactsList()))),
                           FeatureItem(
                               name: "Transaction feed",
                               icon: Icons.insert_drive_file,

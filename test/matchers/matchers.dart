@@ -8,3 +8,10 @@ bool featureItemMatcher(Widget widget, String name, IconData icon) {
 
   return false;
 }
+
+bool textFieldByLabelTextMatcher(Widget widget, String name) {
+  if (widget is TextField) {
+    return widget.decoration.labelText == name;
+  }
+  return false;
+}
